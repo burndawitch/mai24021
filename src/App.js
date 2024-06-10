@@ -8,7 +8,7 @@ const expectedNetworkId = 11155111; // Sepolia network ID
 function App() {
   const [account, setAccount] = useState("");
   const [contractOwner, setContractOwner] = useState("");
-  const [proposals, setProposals] = useState([]);
+  const [proposals, setProposals] = useState(["Elon", "Mark", "Sam"]);
   const [proposalVotes, setProposalVotes] = useState([]);
   const [winner, setWinner] = useState("");
   const [votingHistory, setVotingHistory] = useState([]);
@@ -268,7 +268,14 @@ function App() {
               console.log("Image Path:", imgPath);
               return (
                 <div key={index} className="proposal">
-                  <img src={imgPath} alt={proposal} onError={(e) => console.error("Image load error:", e)} />
+                  <img
+                    src={imgPath}
+                    alt={proposal}
+                    onError={(e) => {
+                      console.error("Image load error:", e);
+                      e.target.src = "https://via.placeholder.com/150"; // fallback image
+                    }}
+                  />
                   <div className={winner === proposal ? 'winner' : ''}>{proposal}</div>
                   <button onClick={() => vote(index)} disabled={votingEnded || isOwner || remainingVotes === 0}>
                     Vote
