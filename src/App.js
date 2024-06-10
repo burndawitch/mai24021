@@ -263,17 +263,21 @@ function App() {
         <h2 className="proposals-title">Proposals</h2>
         <div className="proposals-container">
           <div className="proposals">
-            {proposals.map((proposal, index) => (
-              <div key={index} className="proposal">
-              <img src={`https://burndawitch.github.io/mai24021/${proposal}.jpg`} alt={proposal} />
-                <div className={winner === proposal ? 'winner' : ''}>{proposal}</div>
-                <button onClick={() => vote(index)} disabled={votingEnded || isOwner || remainingVotes === 0}>
-                  Vote
-                </button>
-                <div>Votes: {proposalVotes[index] !== undefined ? proposalVotes[index] : 0}</div>
-                <div>Remaining Votes: {remainingVotes}</div>
-              </div>
-            ))}
+            {proposals.map((proposal, index) => {
+              const imgPath = `https://burndawitch.github.io/mai24021/${proposal}.jpg`;
+              console.log("Image Path:", imgPath);
+              return (
+                <div key={index} className="proposal">
+                  <img src={imgPath} alt={proposal} onError={(e) => console.error("Image load error:", e)} />
+                  <div className={winner === proposal ? 'winner' : ''}>{proposal}</div>
+                  <button onClick={() => vote(index)} disabled={votingEnded || isOwner || remainingVotes === 0}>
+                    Vote
+                  </button>
+                  <div>Votes: {proposalVotes[index] !== undefined ? proposalVotes[index] : 0}</div>
+                  <div>Remaining Votes: {remainingVotes}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
