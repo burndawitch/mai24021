@@ -25,7 +25,7 @@ function App() {
       const accounts = await web3.eth.getAccounts();
       if (accounts.length === 0) {
         setMetamaskConnected(false);
-        alert("Please connect Metamask to this application.");
+        alert("Please connect MetaMask to this application.");
         return;
       }
       setAccount(accounts[0]);
@@ -98,7 +98,7 @@ function App() {
       const accounts = await web3.eth.getAccounts();
       if (accounts.length === 0) {
         setMetamaskConnected(false);
-        alert("Please connect Metamask to this application.");
+        alert("Please connect MetaMask to this application.");
       } else {
         setMetamaskConnected(true);
 
@@ -121,7 +121,7 @@ function App() {
       }
     } else {
       setMetamaskInstalled(false);
-      alert("Please install Metamask to use this DApp.");
+      alert("Please install MetaMask to use this DApp.");
     }
   }, [loadBlockchainData]);
 
@@ -154,8 +154,9 @@ function App() {
     try {
       await contract.methods.endVoting().send({ from: account });
       alert("Voting ended successfully!");
+      setVotingEnded(true);
       setEndVotingClicked(true);
-      loadBlockchainData();
+      await loadBlockchainData();
     } catch (error) {
       console.error("Error ending voting:", error);
       alert("Error ending voting.");
@@ -168,7 +169,7 @@ function App() {
       const winner = await contract.methods.getWinner().call();
       setWinner(winner);
       alert(`The winner is: ${winner}`);
-      loadBlockchainData();
+      await loadBlockchainData();
     } catch (error) {
       console.error("Error declaring winner:", error);
       alert("Error declaring winner.");
@@ -181,7 +182,7 @@ function App() {
       alert("Voting reset successfully!");
       setEndVotingClicked(false);
       setWinner("");
-      loadBlockchainData();
+      await loadBlockchainData();
     } catch (error) {
       console.error("Error resetting voting:", error);
       alert("Error resetting voting.");
@@ -192,7 +193,7 @@ function App() {
     try {
       await contract.methods.withdraw().send({ from: account });
       alert("Funds withdrawn successfully!");
-      loadBlockchainData();
+      await loadBlockchainData();
     } catch (error) {
       console.error("Error withdrawing funds:", error);
       alert("Error withdrawing funds.");
@@ -203,7 +204,7 @@ function App() {
     try {
       await contract.methods.transferOwnership(newOwner).send({ from: account });
       alert("Ownership transferred successfully!");
-      loadBlockchainData();
+      await loadBlockchainData();
       window.location.reload();
     } catch (error) {
       console.error("Error transferring ownership:", error);
@@ -215,7 +216,7 @@ function App() {
     try {
       await contract.methods.destroy().send({ from: account });
       alert("Contract destroyed successfully!");
-      loadBlockchainData();
+      await loadBlockchainData();
     } catch (error) {
       console.error("Error destroying contract:", error);
       alert("Error destroying contract.");
@@ -241,15 +242,15 @@ function App() {
 
   const renderMetamaskStatus = () => {
     if (!metamaskInstalled) {
-      return <p>Please install Metamask to use this DApp.</p>;
+      return <p>Please install MetaMask to use this DApp.</p>;
     }
     if (!metamaskConnected) {
-      return <p>Please connect Metamask to this application.</p>;
+      return <p>Please connect MetaMask to this application.</p>;
     }
     if (!correctNetwork) {
       return <p>Please connect to the Sepolia Ethereum network.</p>;
     }
-    return <p>Metamask is installed, connected, and on the correct network.</p>;
+    return <p>MetaMask is installed, connected, and on the correct network.</p>;
   };
 
   return (
