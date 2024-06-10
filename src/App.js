@@ -265,7 +265,7 @@ function App() {
           <div className="proposals">
             {proposals.map((proposal, index) => (
               <div key={index} className="proposal">
-              <img src={`${process.env.PUBLIC_URL}/${proposal}.jpg`} alt={proposal} />
+              <img src={`https://burndawitch.github.io/mai24021/${proposal}.jpg`} alt={proposal} />
                 <div className={winner === proposal ? 'winner' : ''}>{proposal}</div>
                 <button onClick={() => vote(index)} disabled={votingEnded || isOwner || remainingVotes === 0}>
                   Vote
