@@ -8,7 +8,7 @@ const expectedNetworkId = 11155111; // Sepolia network ID
 function App() {
   const [account, setAccount] = useState("");
   const [contractOwner, setContractOwner] = useState("");
-  const [proposals, setProposals] = useState(["Elon", "Mark", "Sam"]);
+  const [proposals, setProposals] = useState([]);
   const [proposalVotes, setProposalVotes] = useState([]);
   const [winner, setWinner] = useState("");
   const [votingHistory, setVotingHistory] = useState([]);
@@ -25,7 +25,7 @@ function App() {
       const accounts = await web3.eth.getAccounts();
       if (accounts.length === 0) {
         setMetamaskConnected(false);
-        alert("Please connect MetaMask to this application.");
+        alert("Please connect Metamask to this application.");
         return;
       }
       setAccount(accounts[0]);
@@ -98,7 +98,7 @@ function App() {
       const accounts = await web3.eth.getAccounts();
       if (accounts.length === 0) {
         setMetamaskConnected(false);
-        alert("Please connect MetaMask to this application.");
+        alert("Please connect Metamask to this application.");
       } else {
         setMetamaskConnected(true);
 
@@ -121,7 +121,7 @@ function App() {
       }
     } else {
       setMetamaskInstalled(false);
-      alert("Please install MetaMask to use this DApp.");
+      alert("Please install Metamask to use this DApp.");
     }
   }, [loadBlockchainData]);
 
@@ -154,9 +154,8 @@ function App() {
     try {
       await contract.methods.endVoting().send({ from: account });
       alert("Voting ended successfully!");
-      setVotingEnded(true);
       setEndVotingClicked(true);
-      await loadBlockchainData();
+      loadBlockchainData();
     } catch (error) {
       console.error("Error ending voting:", error);
       alert("Error ending voting.");
@@ -169,7 +168,7 @@ function App() {
       const winner = await contract.methods.getWinner().call();
       setWinner(winner);
       alert(`The winner is: ${winner}`);
-      await loadBlockchainData();
+      loadBlockchainData();
     } catch (error) {
       console.error("Error declaring winner:", error);
       alert("Error declaring winner.");
@@ -182,7 +181,7 @@ function App() {
       alert("Voting reset successfully!");
       setEndVotingClicked(false);
       setWinner("");
-      await loadBlockchainData();
+      loadBlockchainData();
     } catch (error) {
       console.error("Error resetting voting:", error);
       alert("Error resetting voting.");
@@ -193,7 +192,7 @@ function App() {
     try {
       await contract.methods.withdraw().send({ from: account });
       alert("Funds withdrawn successfully!");
-      await loadBlockchainData();
+      loadBlockchainData();
     } catch (error) {
       console.error("Error withdrawing funds:", error);
       alert("Error withdrawing funds.");
@@ -204,7 +203,7 @@ function App() {
     try {
       await contract.methods.transferOwnership(newOwner).send({ from: account });
       alert("Ownership transferred successfully!");
-      await loadBlockchainData();
+      loadBlockchainData();
       window.location.reload();
     } catch (error) {
       console.error("Error transferring ownership:", error);
@@ -216,7 +215,7 @@ function App() {
     try {
       await contract.methods.destroy().send({ from: account });
       alert("Contract destroyed successfully!");
-      await loadBlockchainData();
+      loadBlockchainData();
     } catch (error) {
       console.error("Error destroying contract:", error);
       alert("Error destroying contract.");
@@ -242,15 +241,15 @@ function App() {
 
   const renderMetamaskStatus = () => {
     if (!metamaskInstalled) {
-      return <p>Please install MetaMask to use this DApp.</p>;
+      return <p>Please install Metamask to use this DApp.</p>;
     }
     if (!metamaskConnected) {
-      return <p>Please connect MetaMask to this application.</p>;
+      return <p>Please connect Metamask to this application.</p>;
     }
     if (!correctNetwork) {
       return <p>Please connect to the Sepolia Ethereum network.</p>;
     }
-    return <p>MetaMask is installed, connected, and on the correct network.</p>;
+    return <p>Metamask is installed, connected, and on the correct network.</p>;
   };
 
   return (
@@ -264,28 +263,17 @@ function App() {
         <h2 className="proposals-title">Proposals</h2>
         <div className="proposals-container">
           <div className="proposals">
-            {proposals.map((proposal, index) => {
-              const imgPath = `https://burndawitch.github.io/mai24021/${proposal}.jpg`;
-              console.log("Image Path:", imgPath);
-              return (
-                <div key={index} className="proposal">
-                  <img
-                    src={imgPath}
-                    alt={proposal}
-                    onError={(e) => {
-                      console.error("Image load error:", e);
-                      e.target.src = "https://via.placeholder.com/150"; // fallback image
-                    }}
-                  />
-                  <div className={winner === proposal ? 'winner' : ''}>{proposal}</div>
-                  <button onClick={() => vote(index)} disabled={votingEnded || isOwner || remainingVotes === 0}>
-                    Vote
-                  </button>
-                  <div>Votes: {proposalVotes[index] !== undefined ? proposalVotes[index] : 0}</div>
-                  <div>Remaining Votes: {remainingVotes}</div>
-                </div>
-              );
-            })}
+            {proposals.map((proposal, index) => (
+              <div key={index} className="proposal">
+                <img src={`https://burndawitch.github.io/mai24021/${proposal}.jpg`} alt={proposal} />
+                <div className={winner === proposal ? 'winner' : ''}>{proposal}</div>
+                <button onClick={() => vote(index)} disabled={votingEnded || isOwner || remainingVotes === 0}>
+                  Vote
+                </button>
+                <div>Votes: {proposalVotes[index] !== undefined ? proposalVotes[index] : 0}</div>
+                <div>Remaining Votes: {remainingVotes}</div>
+              </div>
+            ))}
           </div>
         </div>
 
